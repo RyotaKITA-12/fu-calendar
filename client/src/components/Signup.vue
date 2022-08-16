@@ -22,7 +22,7 @@
                         v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" label="Confirm Password"
                         @click:append="showPassword = !showPassword" v-model="password_confirm" />
                     <v-card-actions class="justify-center">
-                        <v-btn class="info">登録</v-btn>
+                        <v-btn class="info" @click="signUp">登録</v-btn>
                     </v-card-actions>
                 </v-form>
             </v-card-text>
@@ -34,6 +34,9 @@
     </v-app>
 </template>
 <script>
+/* import firebase from 'firebase' */
+import 'firebase/auth'
+
 export default {
     name: 'Signup',
     data: function () {
@@ -43,6 +46,16 @@ export default {
             email: '',
             password: '',
             password_confirm: ''
+        }
+    },
+    methods: {
+        signUp: function () {
+            firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(res => {
+                console.log('Create account: ', res.user.email)
+                this.$router.push('/signin')
+            }).catch(error => {
+                console.log(error.message)
+            })
         }
     }
 }
