@@ -69,8 +69,9 @@ export default {
         submit() {
             firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(async (result) => {
                 await result.user.updateProfile({
-                    displayName: this.user_id
+                    displayName: this.user_id,
                 })
+                console.log(result.user)
                 localStorage.message = "ユーザの新規作成に成功しました"
                 this.$router.push('/signin')
             }).catch((error) => {

@@ -75,7 +75,7 @@ export default {
                     email: result.user.email,
                     uid: result.user.uid,
                     refreshToken: result.user.refreshToken,
-                    imgURL: result.user.imgURL
+                    photoURL: result.user.photoURL
                 }
                 sessionStorage.setItem('user', JSON.stringify(auth))
                 this.$router.push('/')
