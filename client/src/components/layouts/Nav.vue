@@ -9,7 +9,7 @@
                 MYPAGE
             </v-btn>
             <div class="text-center">
-                <v-menu open-on-hover top offset-y>
+                <v-menu open-on-hover offset-y>
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn v-bind="attrs" v-on="on" text>
                             <v-icon>mdi-account-cog</v-icon>
@@ -17,7 +17,6 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-subheader>FRIEND</v-subheader>
                         <v-list-item-group>
                             <v-list-item v-for="(item, index) in friends" :key="index" :to="item.link">
                                 <v-list-item-icon>
@@ -32,7 +31,7 @@
                 </v-menu>
             </div>
             <div class="text-center">
-                <v-menu open-on-hover top offset-y>
+                <v-menu open-on-hover offset-y>
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn v-bind="attrs" v-on="on" text>
                             <v-icon>mdi-magnify</v-icon>
@@ -40,7 +39,6 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-subheader>SEARCH</v-subheader>
                         <v-list-item-group>
                             <v-list-item v-for="(item, index) in searchs" :key="index" :to="item.link">
                                 <v-list-item-icon>
