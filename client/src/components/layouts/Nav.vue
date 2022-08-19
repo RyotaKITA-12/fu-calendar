@@ -1,7 +1,7 @@
 <template>
     <v-app-bar app color="white" flat>
         <v-container class="py-0 fill-height">
-            <v-img max-height="50" max-width="200" src="@/assets/logo.png"></v-img>
+            <v-img max-height="50" max-width="200" src="@/assets/logo.png" lazy-src="@/assets/logo_small.png"></v-img>
 
             <v-spacer></v-spacer>
             <v-btn to="/" text>
