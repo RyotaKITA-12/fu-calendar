@@ -3,7 +3,7 @@
         <Nav />
         <v-main class="grey lighten-3">
             <v-container>
-                <v-expansion-panels>
+                <v-expansion-panels multiple v-model="panel">
                     <v-expansion-panel>
                         <v-expansion-panel-header v-slot="{ open }">
                             <v-row no-gutters>
@@ -12,7 +12,7 @@
                                         <span v-if="open">検索する日時を入力してください</span>
                                         <v-row v-else no-gutters style="width: 100%">
                                             <v-col cols="4">
-                                                検索日時：
+                                                対象：
                                             </v-col>
                                             <v-col cols="8">
                                                 {{ date_search.start || '0000-00-00' }}
@@ -131,6 +131,7 @@ export default {
         Nav,
     },
     data: () => ({
+        panel: [0],
         date: null,
         date_search: {
             start: null,
