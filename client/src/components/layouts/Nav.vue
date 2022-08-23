@@ -7,7 +7,7 @@
                         lazy-src="@/assets/logo_small.png"></v-img>
                 </router-link>
                 <v-spacer></v-spacer>
-                <v-btn to="/" text>
+                <v-btn to="/" text  active-class="deep-purple--text">
                     <v-icon>mdi-home-account</v-icon>
                     MYPAGE
                 </v-btn>
@@ -20,7 +20,7 @@
                             </v-btn>
                         </template>
                         <v-list>
-                            <v-list-item-group>
+                            <v-list-item-group  active-class="deep-purple--text">
                                 <v-list-item v-for="(item, index) in friends" :key="index" :to="item.link">
                                     <v-list-item-icon>
                                         <v-icon v-text="item.icon"></v-icon>
@@ -42,7 +42,7 @@
                             </v-btn>
                         </template>
                         <v-list>
-                            <v-list-item-group>
+                            <v-list-item-group  active-class="deep-purple--text">
                                 <v-list-item v-for="(item, index) in searchs" :key="index" :to="item.link">
                                     <v-list-item-icon>
                                         <v-icon v-text="item.icon"></v-icon>

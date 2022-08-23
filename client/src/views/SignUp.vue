@@ -74,15 +74,27 @@ export default {
     },
     methods: {
         submit() {
-            firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(async (result) => {
-                await result.user.updateProfile({
-                    displayName: this.user_id,
-                })
-                console.log(result.user)
-                localStorage.message = "ユーザの新規作成に成功しました"
-                this.$router.push('/signin')
-            }).catch((error) => {
-                this.errorMessage = "ユーザの新規作成に失敗しました"
+            const userRef = firebase.firestore().collection('users').doc("W6LJd07uAg2umoTzmXUL")
+            userRef.get().then((doc) => {
+                if (doc.exists) {
+                    console.log(doc.data()["userIds"])
+                    if (doc.data()["userIds"].includes(this.user_id)) {
+                        this.errorMessage = "既に使用されていユーザIDです"
+                    } else {
+                        firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(async (result) => {
+                            await result.user.updateProfile({
+                                displayName: this.user_id,
+                            })
+                            console.log(result.user)
+                            localStorage.message = "ユーザの新規作成に成功しました"
+                            this.$router.push('/signin')
+                        }).catch((error) => {
+                            this.errorMessage = "ユーザの新規作成に失敗しました"
+                        })
+                    }
+                } else {
+                    console.log("No such data")
+                }
             })
         },
     }
