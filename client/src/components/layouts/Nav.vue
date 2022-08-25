@@ -21,7 +21,7 @@
                         </template>
                         <v-list>
                             <v-list-item-group  active-class="deep-purple--text">
-                                <v-list-item v-for="(item, index) in friends" :key="index" :to="item.link">
+                                <v-list-item v-for="item in friends" :to="item.link">
                                     <v-list-item-icon>
                                         <v-icon v-text="item.icon"></v-icon>
                                     </v-list-item-icon>
@@ -43,7 +43,7 @@
                         </template>
                         <v-list>
                             <v-list-item-group  active-class="deep-purple--text">
-                                <v-list-item v-for="(item, index) in searchs" :key="index" :to="item.link">
+                                <v-list-item v-for="item in searchs" :to="item.link">
                                     <v-list-item-icon>
                                         <v-icon v-text="item.icon"></v-icon>
                                     </v-list-item-icon>

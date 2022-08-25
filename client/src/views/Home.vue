@@ -74,6 +74,10 @@ export default {
         },
         mode: 'column',
         value: '',
+        event: {
+            name: "test",
+            start: new Date(2022, )
+        }
     }),
     mounted() {
         this.$refs.calendar.checkChange()

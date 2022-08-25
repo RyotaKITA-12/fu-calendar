@@ -74,10 +74,9 @@ export default {
     },
     methods: {
         submit() {
-            const userRef = firebase.firestore().collection('users').doc("W6LJd07uAg2umoTzmXUL")
-            userRef.get().then((doc) => {
+            const usersRef = firebase.firestore().collection('users').doc("W6LJd07uAg2umoTzmXUL")
+            usersRef.get().then((doc) => {
                 if (doc.exists) {
-                    console.log(doc.data()["userIds"])
                     if (doc.data()["userIds"].includes(this.user_id)) {
                         this.errorMessage = "既に使用されていユーザIDです"
                     } else {
@@ -85,7 +84,12 @@ export default {
                             await result.user.updateProfile({
                                 displayName: this.user_id,
                             })
-                            console.log(result.user)
+                            await firebase.firestore().collection('users').doc("vKmx9TKToLQ7m5u6ovIA").update({
+                                [this.user_id]: this.email,
+                            })
+                            await firebase.firestore().collection('users').doc("W6LJd07uAg2umoTzmXUL").update({
+                                userIds: firebase.firestore.FieldValue.arrayUnion(this.user_id)
+                            })
                             localStorage.message = "ユーザの新規作成に成功しました"
                             this.$router.push('/signin')
                         }).catch((error) => {
