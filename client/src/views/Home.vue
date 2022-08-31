@@ -3,6 +3,7 @@
         <Nav />
         <v-main class="grey lighten-3">
             <v-container>
+                <AddSchedule />
                 <v-sheet min-height="70vh" rounded="lg">
                     <v-sheet tile height="64" class="d-flex">
                         <v-toolbar flat>
@@ -59,10 +60,12 @@
 
 <script>
 import Nav from '@/components/layouts/Nav'
+import AddSchedule from '@/components/modals/AddSchedule'
 
 export default {
     components: {
         Nav,
+        AddSchedule,
     },
     data: () => ({
         focus: '',
@@ -74,10 +77,13 @@ export default {
         },
         mode: 'column',
         value: '',
-        event: {
+        events: [{
             name: "test",
-            start: new Date(2022, )
-        }
+            start: new Date("2022-08-23T05:00:00"),
+            end: new Date("2022-08-23T15:00:00"),
+            color: "blue",
+            timed: true,
+        }],
     }),
     mounted() {
         this.$refs.calendar.checkChange()
