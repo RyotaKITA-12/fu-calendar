@@ -9,13 +9,13 @@ import (
 func main() {
 	app := fiber.New()
 	app.Use(cors.New(cors.Config{
-		// AllowCredentials: true,
-		AllowOrigins: "http://localhost:8080",
-		AllowMethods: "GET, POST, DELETE, PUT",
-		AllowHeaders: "Authorization",
+		AllowCredentials: true,
+		// AllowOrigins: "http://localhost:8080",
+		// AllowMethods: "GET, POST, DELETE, PUT",
+		// AllowHeaders: "Authorization",
 	}))
 
 	routes.Setup(app)
 
-	app.Listen(":8888")
+	app.Listen(":8080")
 }

@@ -6,6 +6,5 @@ import (
 )
 
 func Setup(app *fiber.App) {
-	app.Get("/public", controllers.Public)
-	app.Get("/private", controllers.Private)
+	app.Post("/register/schedule", controllers.RegisterSchedule)
 }

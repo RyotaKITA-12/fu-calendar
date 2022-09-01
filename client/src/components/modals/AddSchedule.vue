@@ -94,8 +94,7 @@
                                         format="24hr" no-title scrollable>
                                         <v-spacer></v-spacer>
                                         <v-btn text color="primary" @click="$refs.timeEndMenu.isActive = false">
-                                            Cancel
-                                        </v-btn>
+                                            Cancel </v-btn>
                                         <v-btn text color="primary" @click="$refs.timeEndMenu.save(timeStep)">
                                             OK
                                         </v-btn>
@@ -153,12 +152,12 @@ export default {
         onSubmit() {
             this.events.push({
                 name: this.title,
-                start: new Date(this.addDate.start + ' ' + this.addTime.start),
-                end: new Date(this.addDate.end + ' ' + this.addTime.end),
+                start: new Date(this.addDate.start + 'T' + this.addTime.start),
+                end: new Date(this.addDate.end + 'T' + this.addTime.end),
                 color: 'blue',
                 timed: true,
             })
-            console.log(this.events)
+            console.log(new Date(this.addDate.start + 'T' + this.addTime.start))
             this.dialog = false
         }
     }

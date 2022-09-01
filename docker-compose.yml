@@ -8,4 +8,38 @@ services:
       - 8888:8080
     volumes:
       - ./server:/api
-    env_file: ./server/.env
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: fucalendar
+
+  mysql:
+    image: mysql:8.0.29
+    container_name: fucalendar
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: fucalendar
+    cap_add:
+      - SYS_NICE
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./mysql/sql:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=admin
+      - PMA_PASSWORD=password
+    links:
+      - mysql
+    ports:
+      - 8000:80
