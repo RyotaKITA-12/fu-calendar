@@ -2,9 +2,13 @@ package routes
 
 import (
 	"github.com/RyotaKITA-12/fu-calendar.git/controllers"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 )
 
-func Setup(app *fiber.App) {
-	app.Post("/register/schedule", controllers.RegisterSchedule)
+func Setup() *gin.Engine {
+	r := gin.Default()
+
+	r.POST("/register/schedule", controllers.RegisterSchedule)
+
+	return r
 }

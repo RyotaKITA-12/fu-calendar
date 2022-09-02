@@ -2,34 +2,43 @@ package database
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/RyotaKITA-12/fu-calendar.git/models"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 var (
-	schema         = "%s:%s@tcp(fucalendar:3306)/%s?charset=utf8&parseTime=True&loc=Local"
-	username       = os.Getenv("MYSQL_USER")
-	password       = os.Getenv("MYSQL_PASSWORD")
-	dbName         = os.Getenv("MYSQL_DATABASE")
-	datasourceName = fmt.Sprintf(schema, username, password, dbName)
+	schema         = "host=db port=5432 user=%s dbname=%s password=%s sslmode=disable"
+	username       = os.Getenv("POSTGRES_USER")
+	password       = os.Getenv("POSTGRES_PASSWORD")
+	dbName         = os.Getenv("POSTGRES_DATABASE")
+	datasourceName = fmt.Sprintf(schema, username, dbName, password)
 
-	err        error
-	connection *gorm.DB
-	DB         *gorm.DB
+	db  *gorm.DB
+	err error
 )
 
-func Connect() {
-
-	connection, err = gorm.Open(mysql.Open(datasourceName), &gorm.Config{})
+func Init() {
+	db, err = gorm.Open("postgres", datasourceName)
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
-	DB = connection
+	autoMigration()
+}
 
-	connection.AutoMigrate(&models.Schedule{})
+func GetDB() *gorm.DB {
+	return db
+}
+
+func autoMigration() {
+	db.AutoMigrate(&models.Schedule{})
+}
+
+func Close() {
+	if err := db.Close(); err != nil {
+		panic(err)
+	}
 }

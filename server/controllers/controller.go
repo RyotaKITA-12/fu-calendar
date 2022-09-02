@@ -1,19 +1,19 @@
 package controllers
 
 import (
-	"log"
+	"net/http"
 	"time"
 
 	"github.com/RyotaKITA-12/fu-calendar.git/database"
 	"github.com/RyotaKITA-12/fu-calendar.git/models"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 )
 
-func RegisterSchedule(c *fiber.Ctx) error {
+func RegisterSchedule(c *gin.Context) {
 	var data map[string]string
 
-	if err := c.BodyParser(&data); err != nil {
-		log.Fatalln(err)
+	if err := c.BindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	start, _ := time.Parse("Mon Jan 02 2006 15:04:05 GMT+0900 (日本標準時)", data["start"])
@@ -28,7 +28,8 @@ func RegisterSchedule(c *fiber.Ctx) error {
 		End:    end,
 	}
 
-	database.DB.Create(&schedule)
+	db := database.GetDB()
+	db.Create(&schedule)
 
-	return c.JSON(schedule)
+	c.JSON(200, schedule)
 }
