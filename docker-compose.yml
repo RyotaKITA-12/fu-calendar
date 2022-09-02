@@ -9,37 +9,19 @@ services:
     volumes:
       - ./server:/api
     depends_on:
-      - mysql
+      - db
     environment:
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: password
-      MYSQL_DATABASE: fucalendar
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DATABASE: fucalendar
 
-  mysql:
-    image: mysql:8.0.29
-    container_name: fucalendar
-    environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: password
-      MYSQL_DATABASE: fucalendar
-    cap_add:
-      - SYS_NICE
-    ports:
-      - 3306:3306
+  db:
+    image: postgres:14-alpine
     volumes:
-      - ./mysql/data:/var/lib/mysql
-      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./mysql/sql:/docker-entrypoint-initdb.d
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+      - ./pgdata:/var/lib/postgresql/data
     environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST=mysql
-      - PMA_USER=admin
-      - PMA_PASSWORD=password
-    links:
-      - mysql
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: fucalendar
     ports:
-      - 8000:80
+      - 5432:5432
