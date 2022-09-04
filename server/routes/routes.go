@@ -25,7 +25,9 @@ func Setup() *gin.Engine {
 	}))
 
 	r.POST("/register/schedule", controllers.RegisterSchedule)
+	r.POST("/register/group", controllers.RegisterGroup)
 	r.POST("/schedules", controllers.GetSchedules)
+	r.POST("/groups", controllers.GetGroups)
 
 	return r
 }
