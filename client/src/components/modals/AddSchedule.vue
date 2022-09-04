@@ -128,6 +128,7 @@
 </template>
 <script>
 import firebase from '@/firebase/firebase'
+import axios from 'axios'
 
 export default {
     data: () => ({
@@ -146,21 +147,32 @@ export default {
         },
         timeStep: null,
         events: [],
+        auth: null
     }),
+    mounted() {
+        this.auth = JSON.parse(sessionStorage.getItem('user'))
+    },
     methods: {
         allowedStep: m => m % 15 === 0,
-        onSubmit() {
-            this.events.push({
-                name: this.title,
-                start: new Date(this.addDate.start + 'T' + this.addTime.start),
-                end: new Date(this.addDate.end + 'T' + this.addTime.end),
-                color: 'blue',
-                timed: true,
+        async onSubmit() {
+            var startDateTime = new Date(this.addDate.start + 'T' + this.addTime.start)
+            var str_start = `${startDateTime}`
+            console.log(str_start)
+            var endDateTime = new Date(this.addDate.end + 'T' + this.addTime.end)
+            var str_end = `${endDateTime}`
+            await axios.post('/register/schedule', {
+                user_id: this.auth.displayName,
+                title: this.title,
+                group: this.group,
+                locate: this.locate,
+                start: str_start,
+                end: str_end,
+            }).then((response) => {
+                console.log(response)
+            }).catch((error) => {
+                console.log(error)
             })
-            console.log(new Date(this.addDate.start + 'T' + this.addTime.start))
-            this.dialog = false
         }
     }
 }
 </script>
-

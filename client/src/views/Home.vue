@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Nav from '@/components/layouts/Nav'
 import AddSchedule from '@/components/modals/AddSchedule'
 
@@ -77,16 +78,13 @@ export default {
         },
         mode: 'column',
         value: '',
-        events: [{
-            name: "test",
-            start: new Date("2022-08-23T05:00:00"),
-            end: new Date("2022-08-23T15:00:00"),
-            color: "blue",
-            timed: true,
-        }],
+        events: [],
+        auth: null
     }),
     mounted() {
         this.$refs.calendar.checkChange()
+        this.auth = JSON.parse(sessionStorage.getItem('user'))
+        this.getSchedule()
     },
     methods: {
         setToday() {
@@ -98,6 +96,25 @@ export default {
         next() {
             this.$refs.calendar.next()
         },
+        async getSchedule() {
+            this.events = []
+            await axios.post('/schedules', {
+                user_id: this.auth.displayName
+            }).then((response) => {
+                response.data.forEach(elem => {
+                    var e = {
+                        name: elem.title,
+                        start: new Date(elem.start.slice(0, -1)),
+                        end: new Date(elem.end.slice(0, -1)),
+                        color: "blue",
+                        timed: true,
+                    }
+                    this.events.push(e)
+                })
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
     }
 
 }
