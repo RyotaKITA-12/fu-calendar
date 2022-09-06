@@ -66,6 +66,21 @@ func RegisterMember(c *gin.Context) {
 	c.JSON(200, member)
 }
 
+func DeleteGroup(c *gin.Context) {
+	var data map[string]string
+
+	if err := c.BindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	var group models.Group
+
+	db := database.GetDB()
+	db.Where("group_name = ? and host_id = ?",
+		data["group_name"],
+		data["host_id"]).Delete(&group)
+}
+
 func RegisterGroup(c *gin.Context) {
 	var data map[string]string
 

@@ -24,6 +24,7 @@ func Setup() *gin.Engine {
 		AllowCredentials: true,
 	}))
 
+	r.POST("/delete/group", controllers.DeleteGroup)
 	r.POST("/register/schedule", controllers.RegisterSchedule)
 	r.POST("/register/group/member", controllers.RegisterMember)
 	r.POST("/register/group", controllers.RegisterGroup)
@@ -31,7 +32,7 @@ func Setup() *gin.Engine {
 	r.POST("/schedules", controllers.GetMySchedules)
 	r.POST("/schedules/invited", controllers.GetInvitedSchedules)
 	r.POST("/groups", controllers.GetGroups)
-    r.POST("/group/members", controllers.GetMembers)
+	r.POST("/group/members", controllers.GetMembers)
 	r.POST("/friends", controllers.GetFriends)
 
 	return r
