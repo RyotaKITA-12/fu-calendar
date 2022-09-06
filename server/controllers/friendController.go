@@ -40,7 +40,10 @@ func RegisterFriend(c *gin.Context) {
 	}
 
 	db := database.GetDB()
-	db.Create(&friend)
+	db.FirstOrCreate(&friend, models.Friend{
+		HostID:   data["host_id"],
+		MemberID: data["member_id"],
+    })
 
 	c.JSON(200, friend)
 }

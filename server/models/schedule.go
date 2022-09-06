@@ -8,10 +8,10 @@ import (
 
 type Schedule struct {
 	gorm.Model
-	UserID string    `json:"user_id"`
-	Title  string    `json:"title"`
-	Group  string    `json:"group"`
-	Locate string    `json:"locate"`
-	Start  time.Time `json:"start"`
-	End    time.Time `json:"end"`
+	UserID    string    `json:"user_id"`
+	Title     string    `json:"title"`
+	GroupName string    `json:"group"`
+	Locate    string    `json:"locate"`
+	StartDate time.Time `json:"start"`
+	EndDate   time.Time `json:"end"`
 }

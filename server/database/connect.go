@@ -34,7 +34,7 @@ func GetDB() *gorm.DB {
 }
 
 func autoMigration() {
-	db.AutoMigrate(&models.Schedule{}, &models.Group{}, &models.Friend{})
+	db.AutoMigrate(&models.Schedule{}, &models.Group{}, &models.Friend{}, &models.Member{})
 }
 
 func Close() {
