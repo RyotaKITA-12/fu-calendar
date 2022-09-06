@@ -1,65 +1,45 @@
 <template>
-    <div v-if="windowWidth > 850">
+    <div v-if="windowWidth > 870">
         <v-app-bar app color="white" flat>
             <v-container class="py-0 fill-height">
                 <router-link to="/">
-                    <v-img to="/" max-height="50" max-width="200" src="@/assets/logo.png"
+                    <v-img to="/" max-height="50" max-width="160" src="@/assets/logo.png"
                         lazy-src="@/assets/logo_small.png"></v-img>
                 </router-link>
                 <v-spacer></v-spacer>
-                <v-btn to="/" text  active-class="deep-purple--text">
+                <v-btn to="/" small text active-class="deep-purple--text">
                     <v-icon>mdi-home-account</v-icon>
                     MYPAGE
                 </v-btn>
+                <v-btn to="/friend" small text active-class="deep-purple--text">
+                    <v-icon>mdi-account</v-icon>
+                    FRIEND
+                </v-btn>
+                <v-btn to="/group" small text active-class="deep-purple--text">
+                    <v-icon>mdi-account-multiple</v-icon>
+                    GROUP
+                </v-btn>
                 <div class="text-center">
                     <v-menu open-on-hover offset-y>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn v-bind="attrs" v-on="on" text>
-                                <v-icon>mdi-account-cog</v-icon>
-                                FRIEND
+                            <v-btn small to="/search" v-bind="attrs" v-on="on" text active-class="deep-purple--text">
+                                <div v-if="notification == 0">
+                                    <v-icon>mdi-magnify</v-icon>
+                                    SEARCH
+                                </div>
+                                <v-badge v-else color="green" :content="notification">
+                                    <v-icon>mdi-magnify</v-icon>
+                                    SEARCH
+                                </v-badge>
                             </v-btn>
                         </template>
-                        <v-list>
-                            <v-list-item-group  active-class="deep-purple--text">
-                                <v-list-item v-for="item in friends" :to="item.link">
-                                    <v-list-item-icon>
-                                        <v-icon v-text="item.icon"></v-icon>
-                                    </v-list-item-icon>
-                                    <v-list-item-content>
-                                        <v-list-item-title v-text="item.text"></v-list-item-title>
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-list-item-group>
-                        </v-list>
                     </v-menu>
                 </div>
-                <div class="text-center">
-                    <v-menu open-on-hover offset-y>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn v-bind="attrs" v-on="on" text>
-                                <v-icon>mdi-magnify</v-icon>
-                                SEARCH
-                            </v-btn>
-                        </template>
-                        <v-list>
-                            <v-list-item-group  active-class="deep-purple--text">
-                                <v-list-item v-for="item in searchs" :to="item.link">
-                                    <v-list-item-icon>
-                                        <v-icon v-text="item.icon"></v-icon>
-                                    </v-list-item-icon>
-                                    <v-list-item-content>
-                                        <v-list-item-title v-text="item.text"></v-list-item-title>
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-list-item-group>
-                        </v-list>
-                    </v-menu>
-                </div>
-                <v-btn color="red" text @click="signOut">
+                <v-btn color="red" small text @click="signOut">
                     <v-icon>mdi-logout</v-icon>
                     LOGOUT
                 </v-btn>
-                <v-avatar class="mr-10" style="margin-left: 20px;" color="grey darken-1" size="48">
+                <v-avatar class="mr-10" style="margin-left: 20px;" color="grey darken-1" size="40">
                     <input type="file" ref="fileInput" @change="updateIcon" style="display: none"
                         accept="image/jpg, image/jpeg, image/png">
                     <v-icon v-if="!photoUrl" dark @click="changeIcon">
@@ -74,7 +54,7 @@
         <v-app-bar app color="white" flat>
             <v-container class="py-0 fill-height">
                 <router-link to="/">
-                    <v-img to="/" max-height="50" max-width="100" src="@/assets/logo.png"
+                    <v-img to="/" max-height="50" max-width="140" src="@/assets/logo.png"
                         lazy-src="@/assets/logo_small.png"></v-img>
                 </router-link>
                 <v-spacer></v-spacer>
@@ -82,6 +62,14 @@
                     <v-icon>mdi-logout</v-icon>
                     LOGOUT
                 </v-btn>
+                <v-avatar class="mr-10" style="margin-left: 20px;" color="grey darken-1" size="48">
+                    <input type="file" ref="fileInput" @change="updateIcon" style="display: none"
+                        accept="image/jpg, image/jpeg, image/png">
+                    <v-icon v-if="!photoUrl" dark @click="changeIcon">
+                        mdi-account-circle
+                    </v-icon>
+                    <img :src="photoUrl" v-if="photoUrl" @click="changeIcon">
+                </v-avatar>
                 <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             </v-container>
         </v-app-bar>
@@ -117,37 +105,20 @@
                             </v-list-item>
                         </v-list-item>
                     </v-list-group>
-                    <v-list-group :value="active" disabled no-action prepend-icon="mdi-account-cog">
-                        <template v-slot:activator>
-                            <v-list-item-content>
-                                <v-list-item-title>検索</v-list-item-title>
-                            </v-list-item-content>
-                        </template>
-                        <v-list-item>
-                            <v-list-item to="/search/date">
-                                <v-list-item-icon>
-                                    <v-icon>mdi-clock</v-icon>
-                                </v-list-item-icon>
-                                <v-list-item-title>日時から検索</v-list-item-title>
-                            </v-list-item>
-                        </v-list-item>
-                        <v-list-item>
-                            <v-list-item to="/search/friend">
-                                <v-list-item-icon>
-                                    <v-icon>mdi-account-search</v-icon>
-                                </v-list-item-icon>
-                                <v-list-item-title>フレンドから検索</v-list-item-title>
-                            </v-list-item>
-                        </v-list-item>
-                    </v-list-group>
+                    <v-list-item to="/search">
+                        <v-list-item-icon>
+                            <v-icon>mdi-clock</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>検索</v-list-item-title>
+                    </v-list-item>
                 </v-list-item-group>
             </v-list>
         </v-navigation-drawer>
     </div>
-
 </template>
 <script>
 import firebase from '@/firebase/firebase'
+/* import axios from 'axios' */
 
 export default {
     name: 'App',
@@ -156,16 +127,13 @@ export default {
             { icon: 'mdi-account', text: 'フレンドの管理', link: '/friend' },
             { icon: 'mdi-account-multiple', text: 'グループの管理', link: '/group' },
         ],
-        searchs: [
-            { icon: 'mdi-clock', text: '日時から検索', link: '/search/date' },
-            { icon: 'mdi-account-search', text: 'フレンドから検索', link: '/search/friend' },
-        ],
         auth: null,
         photoUrl: '',
         windowWidth: 0,
         drawer: false,
         group: null,
         active: true,
+        notification: 0,
     }),
     watch: {
         group() {
@@ -174,9 +142,8 @@ export default {
     },
     mounted() {
         window.addEventListener('resize', this.calculateWindowWidth);
-        this.calculateWindowWidth(),
-            this.auth = JSON.parse(sessionStorage.getItem('user'))
-        console.log(this.auth.photoURL)
+        this.calculateWindowWidth()
+        this.auth = JSON.parse(sessionStorage.getItem('user'))
         this.photoUrl = this.auth.photoURL
     },
     beforeDestroy() {
@@ -203,7 +170,7 @@ export default {
             }
             const file = this.$refs.fileInput.files[0]
             const auth = JSON.parse(sessionStorage.getItem('user'))
-            const filePath = `/user/icon/${auth.email}`
+            const filePath = `/user/icon/${auth.displayName}`
             firebase.storage().ref().child(filePath).put(file).then(async snapshot => {
                 const photoUrl = await snapshot.ref.getDownloadURL()
                 firebase.auth().onAuthStateChanged((user) => {
@@ -221,7 +188,7 @@ export default {
         },
         calculateWindowWidth() {
             this.windowWidth = window.innerWidth;
-        }
+        },
     }
 }
 </script>

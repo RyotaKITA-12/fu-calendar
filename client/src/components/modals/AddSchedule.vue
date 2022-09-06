@@ -50,7 +50,7 @@
                                         </v-text-field>
                                     </template>
                                     <v-time-picker v-model="timeStep" :allowed-minutes="allowedStep" class="mt-4"
-                                        format="24hr" no-title scrollable>
+                                        format="24hr">
                                         <v-spacer></v-spacer>
                                         <v-btn text color="primary" @click="$refs.timeStartMenu.isActive = false">
                                             Cancel
@@ -91,7 +91,7 @@
                                         </v-text-field>
                                     </template>
                                     <v-time-picker v-model="timeStep" :allowed-minutes="allowedStep" class="mt-4"
-                                        format="24hr" no-title scrollable>
+                                        format="24hr">
                                         <v-spacer></v-spacer>
                                         <v-btn text color="primary" @click="$refs.timeEndMenu.isActive = false">
                                             Cancel </v-btn>
@@ -136,7 +136,7 @@ export default {
         title: "",
         locate: "",
         group: [],
-        groups: ["G1", "G2", "G3"],
+        groups: [],
         addDate: {
             start: null,
             end: null,
@@ -151,9 +151,23 @@ export default {
     }),
     mounted() {
         this.auth = JSON.parse(sessionStorage.getItem('user'))
+        this.getGroups()
     },
     methods: {
         allowedStep: m => m % 15 === 0,
+        async getGroups() {
+            await axios.post('/groups', {
+                host_id: this.auth.displayName
+            }).then((response) => {
+                this.groups = []
+                response.data.forEach(elem => {
+                    this.groups.push(elem.group_name)
+                })
+            }).catch((error) => {
+                console.log(error)
+            })
+
+        },
         async onSubmit() {
             var startDateTime = new Date(this.addDate.start + 'T' + this.addTime.start)
             var str_start = `${startDateTime}`
@@ -172,6 +186,7 @@ export default {
             }).catch((error) => {
                 console.log(error)
             })
+            this.dialog = false
         }
     }
 }

@@ -8,16 +8,16 @@
                         <v-col cols="3">
                             <v-card class="mx-auto white" style="padding-top: 10px;">
                                 <v-text-field style="padding-top: 20px; padding-left: 10px; padding-right: 10px"
-                                    v-model="addUser" label="add Email" type="text">
+                                    v-model="addUser" label="add UserID" type="text">
                                     <template v-slot:append-outer>
-                                        <v-btn color="primary">追加</v-btn>
+                                        <v-btn color="primary" @click="onSubmit">追加</v-btn>
                                     </template>
                                 </v-text-field>
                                 <v-list color="blue-grey lighten-5" style="height: 71vh; overflow-y: auto;">
                                     <v-list-item-group v-model="selectedUser" color="primary">
-                                        <v-list-item v-for="[icon, user] in users" :key="icon">
+                                        <v-list-item v-for="user in users" :key="user">
                                             <v-list-item-icon>
-                                                <v-icon>{{ icon }}</v-icon>
+                                                <v-icon>mdi-account</v-icon>
                                             </v-list-item-icon>
 
                                             <v-list-item-content>
@@ -38,6 +38,7 @@
 </template>
 <script>
 import Nav from '@/components/layouts/Nav'
+import axios from 'axios'
 
 export default {
     components: {
@@ -45,34 +46,38 @@ export default {
     },
     data: () => ({
         selectedUser: 1,
-        users: [
-            ['mdi-account', 'user1'],
-            ['mdi-account', 'user2'],
-            ['mdi-account', 'user3'],
-            ['mdi-account', 'user4'],
-            ['mdi-account', 'user5'],
-            ['mdi-account', 'user6'],
-            ['mdi-account', 'user7'],
-            ['mdi-account', 'user8'],
-            ['mdi-account', 'user9'],
-            ['mdi-account', 'user10'],
-            ['mdi-account', 'user11'],
-            ['mdi-account', 'user12'],
-            ['mdi-account', 'user13'],
-            ['mdi-account', 'user14'],
-            ['mdi-account', 'user15'],
-            ['mdi-account', 'user16'],
-            ['mdi-account', 'user17'],
-            ['mdi-account', 'user18'],
-            ['mdi-account', 'user19'],
-            ['mdi-account', 'user20'],
-            ['mdi-account', 'user21'],
-            ['mdi-account', 'user22'],
-            ['mdi-account', 'user23'],
-            ['mdi-account', 'user24'],
-            ['mdi-account', 'user25'],
-        ],
-    })
+        users: [],
+        addUser: "",
+        auth: null,
+    }),
+    mounted() {
+        this.auth = JSON.parse(sessionStorage.getItem('user'))
+        this.getFriends()
+    },
+    methods: {
+        async getFriends() {
+            await axios.post('/friends', {
+                host_id: this.auth.displayName
+            }).then((response) => {
+                this.users = response.data
+            }).catch((error) => {
+                console.log(error)
+            })
+
+        },
+        async onSubmit() {
+            await axios.post('/register/friend', {
+                host_id: this.auth.displayName,
+                member_id: this.addUser,
+            }).then((response) => {
+                console.log(response)
+                this.getFriends()
+            }).catch((error) => {
+                console.log(error)
+            })
+            this.dialog = false
+        }
+    }
 }
 </script>
 

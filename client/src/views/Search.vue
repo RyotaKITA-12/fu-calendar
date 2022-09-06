@@ -28,11 +28,12 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <v-row justify="space-around" no-gutters>
-                                <v-col cols="12">
-                                    <v-autocomplete v-model="values" :items="items" dense filled small-chips multiple
+                                <v-col cols="8">
+                                    <v-autocomplete v-model="values" :items="users" dense filled small-chips multiple
                                         label="Frieds">
                                     </v-autocomplete>
                                 </v-col>
+                                <v-btn color="primary" x-large @click="onSubmit">検索</v-btn>
                             </v-row>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -92,6 +93,7 @@
 </template>
 <script>
 import Nav from '@/components/layouts/Nav'
+import axios from 'axios'
 
 export default {
     components: {
@@ -107,13 +109,26 @@ export default {
             day: 'Day',
         },
         mode: 'column',
-        values: '',
-        items: ['user1', 'user2', 'user3', 'user4'],
+        values: null,
+        users: [],
+        events: [],
+        auth: null,
     }),
     mounted() {
         this.$refs.calendar.checkChange()
+        this.auth = JSON.parse(sessionStorage.getItem('user'))
+        this.getFriends()
     },
     methods: {
+        async getFriends() {
+            await axios.post('/friends', {
+                host_id: this.auth.displayName
+            }).then((response) => {
+                this.users = response.data
+            }).catch((error) => {
+                console.log(error)
+            })
+        },
         setToday() {
             this.focus = ''
         },
@@ -123,8 +138,29 @@ export default {
         next() {
             this.$refs.calendar.next()
         },
+        async onSubmit() {
+            await axios.post('/schedules/invited', {
+                host_id: this.auth.displayName,
+                members: this.values,
+            }).then((response) => {
+                console.log(response)
+                this.events = []
+                response.data.forEach(elem => {
+                    var e = {
+                        name: elem.title,
+                        start: new Date(elem.start.slice(0, -1)),
+                        end: new Date(elem.end.slice(0, -1)),
+                        color: "blue",
+                        timed: true,
+                    }
+                    this.events.push(e)
+                })
+            }).catch((error) => {
+                console.log(error)
+            })
+            this.dialog = false
+        }
     }
-
 }
 </script>
 
