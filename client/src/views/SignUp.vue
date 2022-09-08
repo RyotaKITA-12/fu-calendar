@@ -74,8 +74,8 @@ export default {
     },
     methods: {
         submit() {
-            const usersRef = firebase.firestore().collection('users').doc("W6LJd07uAg2umoTzmXUL")
-            usersRef.get().then((doc) => {
+            const usersref = firebase.firestore().collection('users').doc("W6LJd07uAg2umoTzmXUL")
+            usersref.get().then((doc) => {
                 if (doc.exists) {
                     if (doc.data()["userIds"].includes(this.user_id)) {
                         this.errorMessage = "既に使用されていユーザIDです"

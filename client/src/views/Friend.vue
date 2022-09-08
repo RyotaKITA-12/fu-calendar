@@ -38,6 +38,7 @@
 </template>
 <script>
 import Nav from '@/components/layouts/Nav'
+import firebase from 'firebase'
 import axios from 'axios'
 
 export default {
@@ -65,17 +66,21 @@ export default {
             })
 
         },
-        async onSubmit() {
-            await axios.post('/register/friend', {
-                host_id: this.auth.displayName,
-                member_id: this.addUser,
-            }).then((response) => {
-                console.log(response)
-                this.getFriends()
-            }).catch((error) => {
-                console.log(error)
+        onSubmit() {
+            const usersref = firebase.firestore().collection('users').doc("W6LJd07uAg2umoTzmXUL")
+            usersref.get().then(async (doc) => {
+                if (doc.data()["userIds"].includes(this.addUser)) {
+                    await axios.post('/register/friend', {
+                        host_id: this.auth.displayName,
+                        member_id: this.addUser,
+                    }).then((response) => {
+                        console.log(response)
+                        this.getFriends()
+                    }).catch((error) => {
+                        console.log(error)
+                    })
+                }
             })
-            this.dialog = false
         }
     }
 }

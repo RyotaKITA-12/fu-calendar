@@ -39,10 +39,6 @@
                                                 style="margin-left: 10px;">
                                                 <b>更新</b>
                                             </v-btn>
-                                            <v-btn color="green darken-1" class="white--text" @click="getMembers"
-                                                style="margin-left: 10px;">
-                                                <b>追加</b>
-                                            </v-btn>
                                             <v-btn color="red darken-1" class="white--text" @click="deleteGroup"
                                                 style="margin-left: 10px;">
                                                 <b>削除</b>
@@ -52,17 +48,33 @@
 
                                     <v-divider v-else-if="item.divider" :key="index" :inset="item.inset"></v-divider>
 
-                                    <v-list-item v-else :key="item.title">
+                                    <v-list-item v-else :key="item.title" style="width: 75%;">
                                         <v-list-item-avatar>
                                             <v-img :src="item.avatar"></v-img>
                                         </v-list-item-avatar>
 
-                                        <v-list-item-content>
+                                        <v-list-item-content style="margin-top: -13px; margin-left: 20px;">
                                             <v-list-item-title v-html="item.title"></v-list-item-title>
                                         </v-list-item-content>
+                                        <v-list-item-action>
+                                            <v-btn icon @click="deleteMember(item.title)">
+                                                <v-icon color="red darken-3">mdi-window-close</v-icon>
+                                            </v-btn>
+                                        </v-list-item-action>
                                     </v-list-item>
                                 </template>
                             </v-list>
+                            <div v-if="selectedGroup != null">
+                                <v-list-item
+                                    style="width: 70%; margin-top: 5px; margin-left: 12px; margin-right: 11px;">
+                                    <v-list-item-content class="grey--text">
+                                        <v-select v-model="member" :items="friends" dense color="blue darken-2"
+                                            label="新規メンバーを追加" prepend-icon="mdi-account-multiple"
+                                            append-outer-icon="mdi-send" @click:append-outer="addMember()" required>
+                                        </v-select>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </div>
                         </v-col>
                     </v-row>
                 </v-sheet>
@@ -85,16 +97,28 @@ export default {
         addGroup: "",
         auth: null,
         memberNames: [],
+        member: "",
         members: [
             { header: 'グループメンバー' },
         ],
+        friends: [],
     }),
     mounted() {
         this.auth = JSON.parse(sessionStorage.getItem('user'))
+        this.getFriends()
         this.getGroups()
         this.getMembers()
     },
     methods: {
+        async getFriends() {
+            await axios.post('/friends', {
+                host_id: this.auth.displayName
+            }).then((response) => {
+                this.friends = response.data
+            }).catch((error) => {
+                console.log(error)
+            })
+        },
         async getGroups() {
             await axios.post('/groups', {
                 host_id: this.auth.displayName
@@ -107,7 +131,6 @@ export default {
             }).catch((error) => {
                 console.log(error)
             })
-
         },
         selectGroup() {
             setTimeout(this.getMembers, 100)
@@ -165,6 +188,32 @@ export default {
             }).catch((_) => {
                 pass
             })
+        },
+        async deleteMember(member_id) {
+            await axios.post('/delete/group/member', {
+                host_id: this.auth.displayName,
+                group_name: this.groups[this.selectedGroup],
+                member_id: member_id
+            }).then((_) => {
+                this.getMembers()
+            }).catch((_) => {
+                pass
+            })
+        },
+        async addMember() {
+            if (!this.memberNames.includes(this.member)) {
+                await axios.post('/register/group/member', {
+                    host_id: this.auth.displayName,
+                    group_name: this.groups[this.selectedGroup],
+                    member_id: this.member
+                }).then((_) => {
+                    this.getMembers()
+                }).catch((_) => {
+                    pass
+                })
+            } else {
+                this.member = ""
+            }
         },
         async onSubmit() {
             await axios.post('/register/group', {
