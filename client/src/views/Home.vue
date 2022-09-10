@@ -49,8 +49,42 @@
                     </v-sheet>
                     <v-sheet height="600">
                         <v-calendar ref="calendar" v-model="focus" :type="type" :events="events"
-                            :event-overlap-mode="mode" :event-overlap-threshold="30">
+                            :event-overlap-mode="mode" :event-overlap-threshold="30" @click:event="showEvent">
                         </v-calendar>
+                        <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement"
+                            offset-x>
+                            <v-card color="grey lighten-4" min-width="350px" flat>
+                                <v-toolbar :color="selectedEvent.color" dark>
+                                    <v-btn icon>
+                                        <v-icon>mdi-pencil</v-icon>
+                                    </v-btn>
+                                    <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                    <v-btn icon>
+                                        <v-icon>mdi-heart</v-icon>
+                                    </v-btn>
+                                    <v-btn icon>
+                                        <v-icon>mdi-dots-vertical</v-icon>
+                                    </v-btn>
+                                </v-toolbar>
+                                <v-card-text>
+                                    START　: {{ formatDate(selectedEvent.start) }}
+                                    <br>
+                                    END　　: {{ formatDate(selectedEvent.end) }}
+                                    <span v-html="selectedEvent.details"></span>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn text color="secondary" @click="selectedOpen = false">
+                                        Cancel
+                                    </v-btn>
+                                    <v-spacer />
+                                    <v-btn color="primary" dark @click="selectedOpen = false">
+                                        <v-icon style="margin-right: 10px;">mdi-send-circle</v-icon>
+                                        <b>誘う</b>
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-menu>
                     </v-sheet>
                 </v-sheet>
             </v-container>
@@ -79,7 +113,10 @@ export default {
         mode: 'column',
         value: '',
         events: [],
-        auth: null
+        auth: null,
+        selectedEvent: {},
+        selectedElement: null,
+        selectedOpen: false,
     }),
     mounted() {
         this.$refs.calendar.checkChange()
@@ -114,8 +151,36 @@ export default {
             }).catch((error) => {
                 console.log(error)
             })
-        }
-    }
+        },
+        showEvent({ nativeEvent, event }) {
+            const open = () => {
+                this.selectedEvent = event
+                this.selectedElement = nativeEvent.target
+                requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
+            }
 
+            if (this.selectedOpen) {
+                this.selectedOpen = false
+                requestAnimationFrame(() => requestAnimationFrame(() => open()))
+            } else {
+                open()
+            }
+
+            nativeEvent.stopPropagation()
+        },
+        formatDate(in_date) {
+            var format = 'YYYY/MM/DD hh:mm:ss'
+            var date = new Date(in_date)
+
+            format = format.replace(/YYYY/g, date.getFullYear());
+            format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+            format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2));
+            format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
+            format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+            format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+
+            return format
+        },
+    }
 }
 </script>
