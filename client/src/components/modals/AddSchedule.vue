@@ -107,8 +107,13 @@
                                 </v-select>
                             </v-col>
                             <v-col cols="10">
-                                <v-text-field v-model="locate" label="Location" prepend-icon="mdi-map-marker" required>
-                                </v-text-field>
+                                <v-select v-model="category" :items="categorys" label="Category"
+                                    prepend-icon="mdi-shape" dense>
+                                </v-select>
+                            </v-col>
+                            <v-col cols="10">
+                                <v-textarea filled auto-grow rows="2" label="Content" :rules="rules" :value="content">
+                                </v-textarea>
                             </v-col>
                         </v-row>
                     </v-container>
@@ -134,9 +139,6 @@ export default {
     data: () => ({
         dialog: false,
         title: "",
-        locate: "",
-        group: [],
-        groups: [],
         addDate: {
             start: null,
             end: null,
@@ -146,6 +148,13 @@ export default {
             end: null,
         },
         timeStep: null,
+        group: [],
+        groups: [],
+        category: null,
+        categorys: ["遊び", "ゲーム", "作業", "散歩", "仕事", "食事", "ショッピング", "スポーツ",
+            "通話", "デート", "ドライブ", "飲み", "博物館", "暇つぶし", "旅行", "その他"],
+        rules: [v => v.length <= 140 || 'Max 140 characters'],
+        content: "",
         events: [],
         auth: null
     }),
@@ -178,7 +187,8 @@ export default {
                 user_id: this.auth.displayName,
                 title: this.title,
                 group: this.group,
-                locate: this.locate,
+                category: this.category,
+                content: this.content,
                 start: str_start,
                 end: str_end,
             }).then((response) => {

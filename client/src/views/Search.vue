@@ -10,30 +10,56 @@
                                 <v-col cols="8" class="text--secondary">
                                     <v-fade-transition leave-absolute>
                                         <span v-if="open">検索するフレンドを入力してください</span>
-                                        <v-row v-else no-gutters style="width: 100%">
-                                            <v-col cols="4">
-                                                対象：
-                                            </v-col>
-                                            <v-col cols="8">
-                                                <v-chip-group active-class="primary--text">
-                                                    <v-chip v-for="value in values" :key="value" color="primary">
-                                                        {{ value }}
-                                                    </v-chip>
-                                                </v-chip-group>
-                                            </v-col>
-                                        </v-row>
+                                        <div v-else>
+                                            <v-row no-gutters style="width: 100%">
+                                                <v-col cols="4">
+                                                    対象：
+                                                </v-col>
+                                            </v-row>
+                                            <v-row style="width: 100%; margin-top: 20px;">
+                                                <v-col>
+                                                    <b>フレンド　：</b>
+                                                    <v-chip-group active-class="primary--text">
+                                                        <v-chip x-small v-for="value in value_friends" :key="value"
+                                                            color="primary">
+                                                            {{ value }}
+                                                        </v-chip>
+                                                    </v-chip-group>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row style="width: 100%">
+                                                <v-col>
+                                                    <b>カテゴリー：</b>
+                                                    <v-chip-group active-class="primary--text">
+                                                        <v-chip x-small v-for="value in value_categorys" :key="value"
+                                                            color="primary">
+                                                            {{ value }}
+                                                        </v-chip>
+                                                    </v-chip-group>
+                                                </v-col>
+                                            </v-row>
+                                        </div>
                                     </v-fade-transition>
                                 </v-col>
                             </v-row>
                         </v-expansion-panel-header>
-                        <v-expansion-panel-content>
+                        <v-expansion-panel-content style="margin-left: 20%;">
                             <v-row justify="space-around" no-gutters>
                                 <v-col cols="8">
-                                    <v-autocomplete v-model="values" :items="users" dense filled small-chips multiple
-                                        label="Frieds">
+                                    <v-autocomplete v-model="value_friends" :items="users" dense filled small-chips
+                                        multiple label="Frieds">
                                     </v-autocomplete>
                                 </v-col>
-                                <v-btn color="primary" x-large @click="onSubmit">検索</v-btn>
+                                <v-spacer />
+                            </v-row>
+                            <v-row justify="space-around" no-gutters>
+                                <v-col cols="8">
+                                    <v-autocomplete v-model="value_categorys" :items="categorys" dense filled
+                                        small-chips multiple label="Categorys">
+                                    </v-autocomplete>
+                                </v-col>
+                                <v-btn style="margin-left: 60px;" color="primary" x-large @click="onSubmit">検索</v-btn>
+                                <v-spacer />
                             </v-row>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -109,8 +135,11 @@ export default {
             day: 'Day',
         },
         mode: 'column',
-        values: null,
+        values_friends: null,
+        value_categorys: null,
         users: [],
+        categorys: ["遊び", "ゲーム", "作業", "散歩", "仕事", "食事", "ショッピング", "スポーツ",
+            "通話", "デート", "ドライブ", "飲み", "博物館", "暇つぶし", "旅行", "その他"],
         events: [],
         auth: null,
     }),
@@ -141,7 +170,8 @@ export default {
         async onSubmit() {
             await axios.post('/schedules/invited', {
                 host_id: this.auth.displayName,
-                members: this.values,
+                members: this.value_friends,
+                categorys: this.value_categorys,
             }).then((response) => {
                 console.log(response)
                 this.events = []

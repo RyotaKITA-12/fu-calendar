@@ -68,10 +68,11 @@
                                     </v-btn>
                                 </v-toolbar>
                                 <v-card-text>
+                                    {{ selectedEvent.category }}
                                     START　: {{ formatDate(selectedEvent.start) }}
                                     <br>
                                     END　　: {{ formatDate(selectedEvent.end) }}
-                                    <span v-html="selectedEvent.details"></span>
+                                    <span v-html="selectedEvent.content"></span>
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-btn text color="secondary" @click="selectedOpen = false">
@@ -117,6 +118,24 @@ export default {
         selectedEvent: {},
         selectedElement: null,
         selectedOpen: false,
+        category_colors: {
+            "遊び": "deep-orange",
+            "ゲーム": "light-blue",
+            "作業": "purple",
+            "散歩": "green",
+            "仕事": "black",
+            "食事": "red",
+            "ショッピング": "amber",
+            "スポーツ": "cyan",
+            "通話": "lime",
+            "デート": "pink",
+            "ドライブ": "indigo",
+            "飲み": "brown",
+            "博物館": "deep-purple",
+            "暇つぶし": "yellow",
+            "旅行": "teal",
+            "その他": "blue-grey"
+        },
     }),
     mounted() {
         this.$refs.calendar.checkChange()
@@ -143,7 +162,10 @@ export default {
                         name: elem.title,
                         start: new Date(elem.start.slice(0, -1)),
                         end: new Date(elem.end.slice(0, -1)),
-                        color: "blue",
+                        group: elem.group,
+                        cateory: elem.category,
+                        content: elem.content,
+                        color: this.category_colors[elem.category],
                         timed: true,
                     }
                     this.events.push(e)
