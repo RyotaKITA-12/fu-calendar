@@ -32,7 +32,7 @@
                                                     <b>カテゴリー：</b>
                                                     <v-chip-group active-class="primary--text">
                                                         <v-chip x-small v-for="value in value_categorys" :key="value"
-                                                            color="primary">
+                                                            dark :color="category_colors[value]">
                                                             {{ value }}
                                                         </v-chip>
                                                     </v-chip-group>
@@ -109,8 +109,47 @@
                     </v-sheet>
                     <v-sheet height="600">
                         <v-calendar ref="calendar" v-model="focus" :type="type" :events="events"
-                            :event-overlap-mode="mode" :event-overlap-threshold="30">
+                            :event-overlap-mode="mode" :event-overlap-threshold="30" @click:event="showEvent">
                         </v-calendar>
+                        <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement"
+                            offset-x>
+                            <v-card color="grey lighten-4" min-width="350px" flat>
+                                <v-toolbar :color="selectedEvent.color" dark>
+                                    <v-btn icon>
+                                        <v-icon>mdi-pencil</v-icon>
+                                    </v-btn>
+                                    <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                    <v-btn icon>
+                                        <v-icon>mdi-heart</v-icon>
+                                    </v-btn>
+                                    <v-btn icon>
+                                        <v-icon>mdi-dots-vertical</v-icon>
+                                    </v-btn>
+                                </v-toolbar>
+                                <v-card-text>
+                                    {{ selectedEvent.category }}
+                                    START　: {{ formatDate(selectedEvent.start) }}
+                                    <br>
+                                    END　　: {{ formatDate(selectedEvent.end) }}
+                                    <br>
+                                    ID　　: {{ selectedEvent.id }}
+                                    <br>
+                                    ID　　: {{ selectedEvent.content }}
+                                    <span v-html="selectedEvent.content"></span>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn text color="secondary" @click="selectedOpen = false">
+                                        Cancel
+                                    </v-btn>
+                                    <v-spacer />
+                                    <v-btn color="primary" dark @click="selectedOpen = false">
+                                        <v-icon style="margin-right: 10px;">mdi-send-circle</v-icon>
+                                        <b>誘う</b>
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-menu>
                     </v-sheet>
                 </v-sheet>
             </v-container>
@@ -138,8 +177,29 @@ export default {
         values_friends: null,
         value_categorys: null,
         users: [],
-        categorys: ["遊び", "ゲーム", "作業", "散歩", "仕事", "食事", "ショッピング", "スポーツ",
-            "通話", "デート", "ドライブ", "飲み", "博物館", "暇つぶし", "旅行", "その他"],
+        selectedEvent: {},
+        selectedElement: null,
+        selectedOpen: false,
+        categorys: ["指定なし", "遊び", "ゲーム", "作業", "散歩", "仕事", "食事", "ショッピング", "スポーツ",
+            "通話", "デート", "ドライブ", "飲み", "博物館", "旅行", "その他"],
+        category_colors: {
+            "指定なし": "yellow",
+            "遊び": "deep-orange",
+            "ゲーム": "light-blue",
+            "作業": "purple",
+            "散歩": "green",
+            "仕事": "black",
+            "食事": "red",
+            "ショッピング": "amber",
+            "スポーツ": "cyan",
+            "通話": "lime",
+            "デート": "pink",
+            "ドライブ": "indigo",
+            "飲み": "brown",
+            "博物館": "deep-purple",
+            "旅行": "teal",
+            "その他": "blue-grey"
+        },
         events: [],
         auth: null,
     }),
@@ -167,6 +227,35 @@ export default {
         next() {
             this.$refs.calendar.next()
         },
+        showEvent({ nativeEvent, event }) {
+            const open = () => {
+                this.selectedEvent = event
+                this.selectedElement = nativeEvent.target
+                requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
+            }
+
+            if (this.selectedOpen) {
+                this.selectedOpen = false
+                requestAnimationFrame(() => requestAnimationFrame(() => open()))
+            } else {
+                open()
+            }
+
+            nativeEvent.stopPropagation()
+        },
+        formatDate(in_date) {
+            var format = 'YYYY/MM/DD hh:mm:ss'
+            var date = new Date(in_date)
+
+            format = format.replace(/YYYY/g, date.getFullYear());
+            format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+            format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2));
+            format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
+            format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+            format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+
+            return format
+        },
         async onSubmit() {
             await axios.post('/schedules/invited', {
                 host_id: this.auth.displayName,
@@ -180,7 +269,9 @@ export default {
                         name: elem.title,
                         start: new Date(elem.start.slice(0, -1)),
                         end: new Date(elem.end.slice(0, -1)),
-                        color: "blue",
+                        color: this.category_colors[elem.category],
+                        id: elem.ID,
+                        content: elem.Content,
                         timed: true,
                     }
                     this.events.push(e)

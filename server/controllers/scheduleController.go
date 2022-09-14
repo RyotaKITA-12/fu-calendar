@@ -3,6 +3,7 @@ package controllers
 import (
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/RyotaKITA-12/fu-calendar.git/database"
@@ -25,8 +26,9 @@ func GetMySchedules(c *gin.Context) {
 }
 
 type sampleInvited struct {
-	HostID  string   `json:"host_id"`
-	Members []string `json:"members"`
+	HostID    string   `json:"host_id"`
+	Members   []string `json:"members"`
+	Categorys []string `json:"categorys"`
 }
 
 func GetInvitedSchedules(c *gin.Context) {
@@ -42,9 +44,11 @@ func GetInvitedSchedules(c *gin.Context) {
 	var schedules []models.Schedule
 	for _, v := range data.Members {
 		db.Where("host_id = ? AND member_id = ?", v, data.HostID).Find(&members)
-		for _, m := range members {
-			db.Where("user_id = ? AND group_name = ?", v, m.GroupName).Find(&tmp_schedules)
-			schedules = append(schedules, tmp_schedules...)
+		for _, c := range data.Categorys {
+			for _, m := range members {
+				db.Where("user_id = ? AND group_name = ? AND category = ?", v, m.GroupName, c).Find(&tmp_schedules)
+				schedules = append(schedules, tmp_schedules...)
+			}
 		}
 	}
 
@@ -69,7 +73,8 @@ func RegisterSchedule(c *gin.Context) {
 		UserID:    data["user_id"],
 		Title:     data["title"],
 		GroupName: data["group"],
-		Locate:    data["locate"],
+		Category:  data["category"],
+		Content:   data["content"],
 		StartDate: start,
 		EndDate:   end,
 	}
@@ -78,4 +83,19 @@ func RegisterSchedule(c *gin.Context) {
 	db.Create(&schedule)
 
 	c.JSON(200, schedule)
+}
+
+func DeleteSchedule(c *gin.Context) {
+	var data map[string]string
+
+	if err := c.BindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	id_str, _ := strconv.Atoi(data["id"])
+
+	var schedule models.Schedule
+
+	db := database.GetDB()
+	db.Where("id = ?", id_str).Delete(&schedule)
 }

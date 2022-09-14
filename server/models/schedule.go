@@ -11,7 +11,8 @@ type Schedule struct {
 	UserID    string    `json:"user_id"`
 	Title     string    `json:"title"`
 	GroupName string    `json:"group"`
-	Locate    string    `json:"locate"`
+    Category   string    `json:"category"`
+	Content   string    `json:"content"`
 	StartDate time.Time `json:"start"`
 	EndDate   time.Time `json:"end"`
 }

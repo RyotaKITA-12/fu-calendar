@@ -48,19 +48,19 @@ func GetMembers(c *gin.Context) {
 }
 
 func DeleteMember(c *gin.Context) {
-    var data map[string]string
+	var data map[string]string
 
-    if err := c.BindJSON(&data); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-    }
+	if err := c.BindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-    var member models.Member
+	var member models.Member
 
-    db := database.GetDB()
-    db.Where("group_name = ? and host_id = ? and member_id = ?",
-        data["group_name"],
-        data["host_id"],
-        data["member_id"]).Delete(&member)
+	db := database.GetDB()
+	db.Where("group_name = ? and host_id = ? and member_id = ?",
+		data["group_name"],
+		data["host_id"],
+		data["member_id"]).Delete(&member)
 }
 
 func RegisterMember(c *gin.Context) {

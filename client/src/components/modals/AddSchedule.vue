@@ -112,7 +112,7 @@
                                 </v-select>
                             </v-col>
                             <v-col cols="10">
-                                <v-textarea filled auto-grow rows="2" label="Content" :rules="rules" :value="content">
+                                <v-textarea filled auto-grow rows="2" label="Content" :rules="rules" v-model="content">
                                 </v-textarea>
                             </v-col>
                         </v-row>
@@ -151,9 +151,8 @@ export default {
         group: [],
         groups: [],
         category: null,
-        categorys: ["遊び", "ゲーム", "作業", "散歩", "仕事", "食事", "ショッピング", "スポーツ",
-            "通話", "デート", "ドライブ", "飲み", "博物館", "暇つぶし", "旅行", "その他"],
-        rules: [v => v.length <= 140 || 'Max 140 characters'],
+        categorys: ["指定なし", "遊び", "ゲーム", "作業", "散歩", "仕事", "食事", "ショッピング", "スポーツ",
+            "通話", "デート", "ドライブ", "飲み", "博物館", "旅行", "その他"],
         content: "",
         events: [],
         auth: null

@@ -55,24 +55,21 @@
                             offset-x>
                             <v-card color="grey lighten-4" min-width="350px" flat>
                                 <v-toolbar :color="selectedEvent.color" dark>
-                                    <v-btn icon>
-                                        <v-icon>mdi-pencil</v-icon>
-                                    </v-btn>
+                                    <v-icon style="margin-bottom: 3px; margin-right: 20px;">{{
+                                            category_icons[selectedEvent.category]
+                                    }}</v-icon>
                                     <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
                                     <v-spacer></v-spacer>
-                                    <v-btn icon>
-                                        <v-icon>mdi-heart</v-icon>
-                                    </v-btn>
-                                    <v-btn icon>
-                                        <v-icon>mdi-dots-vertical</v-icon>
+                                    <v-btn icon color="white" @click="deleteSchedule(selectedEvent.id)">
+                                        <v-icon>mdi-delete</v-icon>
                                     </v-btn>
                                 </v-toolbar>
                                 <v-card-text>
-                                    {{ selectedEvent.category }}
+                                    <b> {{ selectedEvent.content }} </b>
+                                    <br>
                                     START　: {{ formatDate(selectedEvent.start) }}
                                     <br>
                                     END　　: {{ formatDate(selectedEvent.end) }}
-                                    <span v-html="selectedEvent.content"></span>
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-btn text color="secondary" @click="selectedOpen = false">
@@ -118,7 +115,26 @@ export default {
         selectedEvent: {},
         selectedElement: null,
         selectedOpen: false,
+        category_icons: {
+            "指定なし": "mdi-note",
+            "遊び": "mdi-golf",
+            "ゲーム": "mdi-controller",
+            "作業": "mdi-desk",
+            "散歩": "mdi-walk",
+            "仕事": "mdi-office-building",
+            "食事": "mdi-food",
+            "ショッピング": "mdi-shopping",
+            "スポーツ": "mdi-baseball-bat",
+            "通話": "mdi-phone",
+            "デート": "mdi-heart-multiple",
+            "ドライブ": "mdi-car",
+            "飲み": "mdi-glass-wine",
+            "博物館": "mdi-palette",
+            "旅行": "mdi-train",
+            "その他": "mdi-dots-horizontal"
+        },
         category_colors: {
+            "指定なし": "yellow darken-2",
             "遊び": "deep-orange",
             "ゲーム": "light-blue",
             "作業": "purple",
@@ -132,7 +148,6 @@ export default {
             "ドライブ": "indigo",
             "飲み": "brown",
             "博物館": "deep-purple",
-            "暇つぶし": "yellow",
             "旅行": "teal",
             "その他": "blue-grey"
         },
@@ -152,6 +167,16 @@ export default {
         next() {
             this.$refs.calendar.next()
         },
+        async deleteSchedule(scheduleID) {
+            console.log(scheduleID)
+            await axios.post('/delete/schedule', {
+                id: String(scheduleID)
+            }).then((_) => {
+                this.getSchedule()
+            }).catch((error) => {
+                console.log(error)
+            })
+        },
         async getSchedule() {
             this.events = []
             await axios.post('/schedules', {
@@ -159,16 +184,18 @@ export default {
             }).then((response) => {
                 response.data.forEach(elem => {
                     var e = {
+                        id: elem.ID,
                         name: elem.title,
                         start: new Date(elem.start.slice(0, -1)),
                         end: new Date(elem.end.slice(0, -1)),
                         group: elem.group,
-                        cateory: elem.category,
+                        category: elem.category,
                         content: elem.content,
                         color: this.category_colors[elem.category],
                         timed: true,
                     }
                     this.events.push(e)
+                    this.getSchedule()
                 })
             }).catch((error) => {
                 console.log(error)

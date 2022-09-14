@@ -26,6 +26,7 @@ func Setup() *gin.Engine {
 
 	r.POST("/delete/group", controllers.DeleteGroup)
     r.POST("/delete/group/member", controllers.DeleteMember)
+    r.POST("/delete/schedule", controllers.DeleteSchedule)
 	r.POST("/register/schedule", controllers.RegisterSchedule)
 	r.POST("/register/group/member", controllers.RegisterMember)
 	r.POST("/register/group", controllers.RegisterGroup)
