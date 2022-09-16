@@ -26,9 +26,9 @@ func GetMySchedules(c *gin.Context) {
 }
 
 type sampleInvited struct {
-	HostID    int   `json:"host_id"`
-    Members   []int `json:"members"`
-    Categorys []int `json:"categorys"`
+	HostID    string   `json:"host_id"`
+    Members   []string `json:"members"`
+    Categorys []string `json:"categorys"`
 }
 
 func GetInvitedSchedules(c *gin.Context) {

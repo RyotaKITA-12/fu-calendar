@@ -29,6 +29,36 @@
                             </v-card>
                         </v-col>
                         <v-col>
+                            <v-alert border="right" outlined type="success">
+                                I'm a shaped alert with a outline option
+                            </v-alert>
+                            <v-alert border="left" outlined type="success">
+                                I'm a shaped alert with a outline option
+                            </v-alert>
+                            <v-alert outlined text color="info" type="success" style="border-radius: 30px;">
+                                <h3 class="text-h5">
+                                    あそび
+                                </h3>
+                                <div>Maecenas nec odio et ante tincidunt tempus. Sed mollis, eros et ultrices tempus,
+                                    mauris ipsum aliquam libero, non adipiscing dolor urna a orci. Proin viverra, ligula
+                                    sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac
+                                    eros. Curabitur turpis.</div>
+
+                                <v-divider class="my-4 info" style="opacity: 0.22"></v-divider>
+
+                                <v-row align="center" no-gutters>
+                                    <v-col class="grow">
+                                        Proin magna. Vivamus in erat ut urna cursus vestibulum. Etiam imperdiet
+                                        imperdiet orci.
+                                    </v-col>
+                                    <v-spacer></v-spacer>
+                                    <v-col class="shrink">
+                                        <v-btn color="info" outlined>
+                                            Okay
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-alert>
                         </v-col>
                     </v-row>
                 </v-sheet>
@@ -50,6 +80,7 @@ export default {
         users: [],
         addUser: "",
         auth: null,
+        messages: [{ message: "こんにちは" }],
     }),
     mounted() {
         this.auth = JSON.parse(sessionStorage.getItem('user'))

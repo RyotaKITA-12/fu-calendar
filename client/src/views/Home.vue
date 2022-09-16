@@ -195,7 +195,6 @@ export default {
                         timed: true,
                     }
                     this.events.push(e)
-                    this.getSchedule()
                 })
             }).catch((error) => {
                 console.log(error)
