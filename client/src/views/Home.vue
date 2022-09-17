@@ -3,7 +3,7 @@
         <Nav />
         <v-main class="grey lighten-3">
             <v-container>
-                <AddSchedule />
+                <AddSchedule @getSchedule="getSchedule" />
                 <v-sheet min-height="70vh" rounded="lg">
                     <v-sheet tile height="64" class="d-flex">
                         <v-toolbar flat>

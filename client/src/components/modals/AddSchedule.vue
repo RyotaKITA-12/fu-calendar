@@ -190,8 +190,8 @@ export default {
                 content: this.content,
                 start: str_start,
                 end: str_end,
-            }).then((response) => {
-                console.log(response)
+            }).then((_) => {
+                this.$emit('getSchedule')
             }).catch((error) => {
                 console.log(error)
             })

@@ -126,6 +126,7 @@
                                     }}</v-icon>
                                     <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
                                     <v-spacer></v-spacer>
+                                    <h5 v-html="selectedEvent.user_id"></h5>
                                 </v-toolbar>
                                 <v-card-text>
                                     <b> {{ selectedEvent.content }} </b>
@@ -325,6 +326,7 @@ export default {
                 response.data.forEach(elem => {
                     var e = {
                         id: elem.ID,
+                        user_id: elem.user_id,
                         name: elem.title,
                         start: new Date(elem.start.slice(0, -1)),
                         end: new Date(elem.end.slice(0, -1)),
