@@ -10,7 +10,7 @@ func Setup() *gin.Engine {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:8080", "https://kt12.fu-calendar.com/"},
+		AllowOrigins: []string{"http://localhost:8080", "https://kt12.fu-calendar.com:8080", "https://kt12.fu-calendar.com"},
 		AllowMethods: []string{"GET", "POST", "DELETE", "OPTIONS"},
 		AllowHeaders: []string{
 			"Access-Control-Allow-Origin",
