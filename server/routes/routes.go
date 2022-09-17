@@ -10,7 +10,7 @@ func Setup() *gin.Engine {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:8080"},
+		AllowOrigins: []string{"http://localhost:8080", "https://kt12.fu-calendar.com/"},
 		AllowMethods: []string{"GET", "POST", "DELETE", "OPTIONS"},
 		AllowHeaders: []string{
 			"Access-Control-Allow-Origin",
@@ -34,13 +34,13 @@ func Setup() *gin.Engine {
 	r.POST("/schedules", controllers.GetMySchedules)
 	r.POST("/schedules/invited", controllers.GetInvitedSchedules)
 	r.POST("/invite/schedule", controllers.InviteToSchedule)
-    r.POST("/apply/schedule", controllers.ApplyToSchedule)
+	r.POST("/apply/schedule", controllers.ApplyToSchedule)
 	r.POST("/application/status", controllers.GetApplicationStatus)
-    r.POST("/applications", controllers.GetInvitedSchedule)
+	r.POST("/applications", controllers.GetInvitedSchedule)
 	r.POST("/groups", controllers.GetGroups)
 	r.POST("/group/members", controllers.GetMembers)
 	r.POST("/friends", controllers.GetFriends)
-    r.POST("/friends/follower", controllers.GetOneSidedFriends)
+	r.POST("/friends/follower", controllers.GetOneSidedFriends)
 
 	return r
 }
