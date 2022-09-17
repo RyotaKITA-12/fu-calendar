@@ -76,10 +76,6 @@
                                         Cancel
                                     </v-btn>
                                     <v-spacer />
-                                    <v-btn color="primary" dark @click="selectedOpen = false">
-                                        <v-icon style="margin-right: 10px;">mdi-send-circle</v-icon>
-                                        <b>誘う</b>
-                                    </v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-menu>

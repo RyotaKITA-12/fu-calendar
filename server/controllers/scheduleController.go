@@ -27,8 +27,8 @@ func GetMySchedules(c *gin.Context) {
 
 type sampleInvited struct {
 	HostID    string   `json:"host_id"`
-    Members   []string `json:"members"`
-    Categorys []string `json:"categorys"`
+	Members   []string `json:"members"`
+	Categorys []string `json:"categorys"`
 }
 
 func GetInvitedSchedules(c *gin.Context) {
@@ -99,3 +99,4 @@ func DeleteSchedule(c *gin.Context) {
 	db := database.GetDB()
 	db.Where("id = ?", id_str).Delete(&schedule)
 }
+

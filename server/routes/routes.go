@@ -25,17 +25,22 @@ func Setup() *gin.Engine {
 	}))
 
 	r.POST("/delete/group", controllers.DeleteGroup)
-    r.POST("/delete/group/member", controllers.DeleteMember)
-    r.POST("/delete/schedule", controllers.DeleteSchedule)
+	r.POST("/delete/group/member", controllers.DeleteMember)
+	r.POST("/delete/schedule", controllers.DeleteSchedule)
 	r.POST("/register/schedule", controllers.RegisterSchedule)
 	r.POST("/register/group/member", controllers.RegisterMember)
 	r.POST("/register/group", controllers.RegisterGroup)
 	r.POST("/register/friend", controllers.RegisterFriend)
 	r.POST("/schedules", controllers.GetMySchedules)
 	r.POST("/schedules/invited", controllers.GetInvitedSchedules)
+	r.POST("/invite/schedule", controllers.InviteToSchedule)
+    r.POST("/apply/schedule", controllers.ApplyToSchedule)
+	r.POST("/application/status", controllers.GetApplicationStatus)
+    r.POST("/applications", controllers.GetInvitedSchedule)
 	r.POST("/groups", controllers.GetGroups)
 	r.POST("/group/members", controllers.GetMembers)
 	r.POST("/friends", controllers.GetFriends)
+    r.POST("/friends/follower", controllers.GetOneSidedFriends)
 
 	return r
 }

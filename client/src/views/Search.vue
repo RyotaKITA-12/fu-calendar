@@ -135,11 +135,11 @@
                                     END　　: {{ formatDate(selectedEvent.end) }}
                                 </v-card-text>
                                 <v-card-actions>
-                                    <v-btn text color="secondary" @click="selectedOpen = false">
-                                        Cancel
-                                    </v-btn>
-                                    <v-spacer />
-                                    <v-btn color="primary" dark @click="selectedOpen = false">
+                                    <v-textarea v-model="comment" class="mx-2" label="comment" rows="1"
+                                        prepend-icon="mdi-comment">
+                                    </v-textarea>
+                                    <v-btn :disabled="scheduleValid" color="primary"
+                                        @click="inviteSchedule(selectedEvent.id)">
                                         <v-icon style="margin-right: 10px;">mdi-send-circle</v-icon>
                                         <b>誘う</b>
                                     </v-btn>
@@ -218,6 +218,8 @@ export default {
         },
         events: [],
         auth: null,
+        scheduleValid: false,
+        comment: "",
     }),
     mounted() {
         this.$refs.calendar.checkChange()
@@ -276,6 +278,7 @@ export default {
         showEvent({ nativeEvent, event }) {
             const open = () => {
                 this.selectedEvent = event
+                this.getApproved(this.selectedEvent.id)
                 this.selectedElement = nativeEvent.target
                 requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
             }
@@ -318,7 +321,6 @@ export default {
                 members: friends,
                 categorys: categorys,
             }).then((response) => {
-                console.log(response)
                 this.events = []
                 response.data.forEach(elem => {
                     var e = {
@@ -338,7 +340,33 @@ export default {
                 console.log(error)
             })
             this.panel = [1]
-        }
+        },
+        async getApproved(schedule_id) {
+            await axios.post('application/status', {
+                schedule_id: String(schedule_id),
+                user_id: this.auth.displayName,
+            }).then((response) => {
+                if (response.data.ID == 0) {
+                    this.scheduleValid = false
+                } else {
+                    this.scheduleValid = true
+                }
+            }).catch((error) => {
+                console.log(error)
+            })
+        },
+        async inviteSchedule(schedule_id) {
+            await axios.post('invite/schedule', {
+                schedule_id: String(schedule_id),
+                user_id: this.auth.displayName,
+                comment: this.comment,
+            }).then((_) => {
+                this.selectedOpen = false
+                this.comment = ""
+            }).catch((error) => {
+                console.log(error)
+            })
+        },
     }
 }
 </script>

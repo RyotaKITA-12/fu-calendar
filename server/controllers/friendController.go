@@ -8,6 +8,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetOneSidedFriends(c *gin.Context) {
+	var data map[string]string
+
+	if err := c.BindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	var members []models.Friend
+	var followers []string
+	db := database.GetDB()
+	db.Where("member_id = ?", data["host_id"]).Find(&members)
+
+	for _, v := range members {
+		var friend models.Friend
+		db.Where("host_id = ? AND member_id = ?", data["host_id"], v.HostID).First(&friend)
+		if friend.ID == 0 {
+			followers = append(followers, v.HostID)
+		}
+	}
+	c.JSON(200, followers)
+}
+
 func GetFriends(c *gin.Context) {
 	var data map[string]string
 
@@ -43,7 +65,7 @@ func RegisterFriend(c *gin.Context) {
 	db.FirstOrCreate(&friend, models.Friend{
 		HostID:   data["host_id"],
 		MemberID: data["member_id"],
-    })
+	})
 
 	c.JSON(200, friend)
 }
